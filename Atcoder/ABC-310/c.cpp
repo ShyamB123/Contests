@@ -57,117 +57,38 @@ bool compare(pair<ll, ll> p1, pair<ll, ll> p2)
 
 */
 
-map<pair<int,int>,int> inv;
-map<set<vi>,int> dp;
-int n,t,m;
-
-// int ans;
-int tempans =0;
-
-bool check(set<vi> &adj)
-{
-    if(adj.size() != t)
-    {
-        return false;
-    }
-    for(auto i : adj)
-    {
-        vi v;
-        for(auto it :i)
-        {
-            v.pb(it);
-        }
-
-        for(int j =0;j<v.size();j++)
-        {
-            for(int k =0;k<v.size();k++)
-            {
-                if(inv.find({v[j],v[k]}) != inv.end())
-                {
-                    return false;
-                }
-            }
-        }
-    }
-
-    
-    // dbg(adj);
-    
-    return true;
-}
-
-int ways(int cur,int unfilled,set<vi> &adj)
-{
-    if(n - cur + 1< unfilled)
-        return 0;
-    if(cur == n + 1)
-    {
-        if(check(adj))
-        {
-            // ans++;
-            tempans++;
-            return 1;
-        }
-        
-        return 0;
-    }
-    if(dp.find(adj) != dp.end())
-    {
-        return dp[adj];
-    }
-    
-
-    int ans =0;
-    
-    set<vi> temp = adj;
-    for(vector<int> i : adj)
-    {
-        vi v = i;
-        v.pb(cur);
-        // dbg(adj);
-        temp.erase(i);
-        temp.insert(v);
-        ans += ways(cur + 1,unfilled,temp);
-        temp.erase(v);
-        temp.insert(i);
-        // dbg(adj);
-    }
-    vi v;
-    v.pb(cur);
-    adj.insert(v);
-    ans += ways(cur + 1,unfilled-1,adj);
-    adj.erase(v);
-
-    // dbg(ans);
-    return dp[adj] = ans;
-
-}
-
 
 
 void solve()
 {
-  
-    cin>>n>>t>>m;
+    int n;
+    cin>>n;
 
-    set<vi> adj;
+    set<string> s;
 
-    for(int i =0;i<m;i++)
+    for(int i =0;i<n;i++)
     {
-        int u,v;
-        cin>>u>>v;
+        string a;
 
-        inv[{u,v}]++;
-        inv[{v,u}]++;
+        cin>>a;
+
+
+        string b = a;
+
+        reverse(all(b));
+
+        if(b < a)
+        {
+            s.insert(b);
+        }
+        else
+        {
+            s.insert(a);
+        }
     }
-    int unfilled = t;
 
-    // ans =0;
-    tempans = 0;
-    cout << ways(1,unfilled,adj)<<nl;
-    // dbg(tempans);
+    cout << s.size()<<nl;
 
-    // cout << ans<<nl;
 }
 
 
