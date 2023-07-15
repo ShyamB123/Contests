@@ -58,22 +58,22 @@ bool compare(pair<ll, ll> p1, pair<ll, ll> p2)
 */
 
 map<pair<int,int>,int> inv;
-map<vector<vi>,bool> dp;
+map<set<vi>,int> dp;
 int n,t,m;
 
-int ans;
+// int ans;
+int tempans =0;
 
-bool check(vector<vi> &adj)
+bool check(set<vi> &adj)
 {
-    for(int i =0;i<t;i++)
+    if(adj.size() != t)
     {
-        if(adj[i].size() == 0)
-        {
-            return false;
-        }
-
+        return false;
+    }
+    for(auto i : adj)
+    {
         vi v;
-        for(auto it : adj[i])
+        for(auto it :i)
         {
             v.pb(it);
         }
@@ -91,35 +91,55 @@ bool check(vector<vi> &adj)
     }
 
     
-
+    // dbg(adj);
+    
     return true;
 }
-void ways(int cur,int unfilled,set<vi> &adj)
+
+int ways(int cur,int unfilled,set<vi> &adj)
 {
     if(n - cur + 1< unfilled)
-        return;
-    if(cur == n)
+        return 0;
+    if(cur == n + 1)
     {
         if(check(adj))
-            ans++;
-        
-        return;
-    }
-
-
-    for(int i =0;i<t;i++)
-    {
-        adj[i].pb(cur);
-        int newunfill = unfilled;
-        if(adj[i].size() == 1)
         {
-            newunfill--;
+            // ans++;
+            tempans++;
+            return 1;
         }
-        ways(cur + 1,newunfill,adj);
-        adj[i].pop_back();
+        
+        return 0;
     }
+    if(dp.find(adj) != dp.end())
+    {
+        return dp[adj];
+    }
+    
 
-    dp[adj] = true;
+    int ans =0;
+    
+    set<vi> temp = adj;
+    for(vector<int> i : adj)
+    {
+        vi v = i;
+        v.pb(cur);
+        // dbg(adj);
+        temp.erase(i);
+        temp.insert(v);
+        ans += ways(cur + 1,unfilled,temp);
+        temp.erase(v);
+        temp.insert(i);
+        // dbg(adj);
+    }
+    vi v;
+    v.pb(cur);
+    adj.insert(v);
+    ans += ways(cur + 1,unfilled-1,adj);
+    adj.erase(v);
+
+    // dbg(ans);
+    return dp[adj] = ans;
 
 }
 
@@ -130,7 +150,7 @@ void solve()
   
     cin>>n>>t>>m;
 
-    set<vi> adj(t);
+    set<vi> adj;
 
     for(int i =0;i<m;i++)
     {
@@ -142,10 +162,12 @@ void solve()
     }
     int unfilled = t;
 
-    ans =0;
-    ways(1,unfilled,adj);
+    // ans =0;
+    tempans = 0;
+    cout << ways(1,unfilled,adj)<<nl;
+    // dbg(tempans);
 
-    cout << ans<<nl;
+    // cout << ans<<nl;
 }
 
 
